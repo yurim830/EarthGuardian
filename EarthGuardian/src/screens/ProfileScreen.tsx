@@ -5,12 +5,14 @@ interface ProfileScreenProps {
   level: number;
   completedMissions: number;
   points: number;
+  totalMissionCompletions: number;
 }
 
 export const ProfileScreen: React.FC<ProfileScreenProps> = ({
   level,
   completedMissions,
   points,
+  totalMissionCompletions,
 }) => {
   return (
     <View style={styles.container}>
@@ -21,14 +23,22 @@ export const ProfileScreen: React.FC<ProfileScreenProps> = ({
         </View>
         <Text style={styles.name}>지구대장 민준</Text>
         <Text style={styles.level}>레벨 {level} 환경 수호자</Text>
-        <View style={styles.statsRow}>
+        <View style={styles.statsGrid}>
           <View style={styles.statBox}>
             <Text style={styles.statValue}>{completedMissions}</Text>
-            <Text style={styles.statLabel}>미션 성공</Text>
+            <Text style={styles.statLabel}>오늘 완료</Text>
+          </View>
+          <View style={styles.statBox}>
+            <Text style={styles.statValue}>{totalMissionCompletions}</Text>
+            <Text style={styles.statLabel}>총 완료</Text>
           </View>
           <View style={styles.statBox}>
             <Text style={styles.statValue}>{(points / 20).toFixed(1)}</Text>
             <Text style={styles.statLabel}>구한 나무</Text>
+          </View>
+          <View style={styles.statBox}>
+            <Text style={styles.statValue}>{points}</Text>
+            <Text style={styles.statLabel}>총 경험치</Text>
           </View>
         </View>
       </View>
@@ -60,6 +70,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     borderWidth: 6,
     borderColor: '#FFF',
+    elevation: 5,
   },
   avatarEmoji: {
     fontSize: 60,
@@ -76,13 +87,16 @@ const styles = StyleSheet.create({
     color: '#16A34A',
     marginTop: 4,
   },
-  statsRow: {
+  statsGrid: {
     flexDirection: 'row',
+    flexWrap: 'wrap',
     marginTop: 30,
-    gap: 16,
+    gap: 12,
+    width: '100%',
   },
   statBox: {
     flex: 1,
+    minWidth: '45%',
     backgroundColor: '#FFF',
     padding: 20,
     borderRadius: 28,

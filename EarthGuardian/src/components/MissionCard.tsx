@@ -8,13 +8,15 @@ interface MissionCardProps {
   isCompleted: boolean;
   onComplete: (mission: Mission) => void;
   variant?: 'full' | 'summary';
+  completionCount?: number;
 }
 
 export const MissionCard: React.FC<MissionCardProps> = React.memo(({ 
   mission, 
   isCompleted, 
   onComplete,
-  variant = 'full'
+  variant = 'full',
+  completionCount = 0,
 }) => {
   const getCategoryIcon = () => {
     const iconProps = { color: mission.iconColor, size: variant === 'full' ? 32 : 18 };
@@ -34,9 +36,16 @@ export const MissionCard: React.FC<MissionCardProps> = React.memo(({
           {getCategoryIcon()}
         </View>
         <View style={styles.summaryContent}>
-          <Text style={[styles.summaryTitle, isCompleted && styles.textCompleted]}>
-            {mission.title}
-          </Text>
+          <View style={styles.summaryTitleRow}>
+            <Text style={[styles.summaryTitle, isCompleted && styles.textCompleted]}>
+              {mission.title}
+            </Text>
+            {completionCount > 0 && (
+              <View style={styles.countBadge}>
+                <Text style={styles.countBadgeText}>×{completionCount}</Text>
+              </View>
+            )}
+          </View>
           <Text style={styles.summaryPoints}>+{mission.points} EXP</Text>
         </View>
         {!isCompleted && (
@@ -61,7 +70,12 @@ export const MissionCard: React.FC<MissionCardProps> = React.memo(({
           <Text style={styles.category}>{mission.category.toUpperCase()}</Text>
           <Text style={styles.title}>{mission.title}</Text>
         </View>
-        <Text style={styles.points}>+{mission.points}⭐</Text>
+        <View style={styles.pointsContainer}>
+          <Text style={styles.points}>+{mission.points}⭐</Text>
+          {completionCount > 0 && (
+            <Text style={styles.completionCountText}>누적 {completionCount}회</Text>
+          )}
+        </View>
       </View>
       
       <View style={styles.guideContainer}>
@@ -80,11 +94,11 @@ export const MissionCard: React.FC<MissionCardProps> = React.memo(({
     </View>
   );
 }, (prevProps, nextProps) => {
-  // Custom comparison for better performance
   return (
     prevProps.mission.id === nextProps.mission.id &&
     prevProps.isCompleted === nextProps.isCompleted &&
-    prevProps.variant === nextProps.variant
+    prevProps.variant === nextProps.variant &&
+    prevProps.completionCount === nextProps.completionCount
   );
 });
 
@@ -115,10 +129,27 @@ const styles = StyleSheet.create({
     flex: 1,
     marginLeft: 12,
   },
+  summaryTitleRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+  },
   summaryTitle: {
     fontSize: 16,
     fontWeight: 'bold',
     color: '#334155',
+    flex: 1,
+  },
+  countBadge: {
+    backgroundColor: '#F0FDF4',
+    paddingHorizontal: 8,
+    paddingVertical: 2,
+    borderRadius: 10,
+  },
+  countBadgeText: {
+    fontSize: 11,
+    fontWeight: '900',
+    color: '#16A34A',
   },
   summaryPoints: {
     fontSize: 11,
@@ -147,7 +178,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFF',
     borderRadius: 36,
     padding: 24,
-    marginBottom: 24,
+    marginBottom: 16,
     elevation: 2,
   },
   fullHeader: {
@@ -175,10 +206,19 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: '#1E293B',
   },
+  pointsContainer: {
+    alignItems: 'flex-end',
+  },
   points: {
     fontSize: 16,
     fontWeight: '900',
     color: '#F97316',
+  },
+  completionCountText: {
+    fontSize: 10,
+    fontWeight: '700',
+    color: '#16A34A',
+    marginTop: 2,
   },
   guideContainer: {
     backgroundColor: '#F8FAFC',

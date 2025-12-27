@@ -16,10 +16,20 @@ export interface Badge {
   color: string;
 }
 
+export interface MissionStats {
+  [missionId: number]: number; // missionId -> total completion count
+}
+
 export interface AppState {
   points: number;
   streak: number;
-  completedMissions: number[];
+  lastActiveDate: string;
+  todayCompletedMissions: number[];
+  missionStats: MissionStats; // Track total completions per mission
+  isHydrated: boolean;
   addPoints: (val: number) => void;
   completeMission: (id: number) => void;
+  checkAndResetDaily: () => void;
+  hydrate: () => Promise<void>;
+  saveToStorage: () => Promise<void>;
 }

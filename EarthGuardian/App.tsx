@@ -1,5 +1,5 @@
-import React, { useState, useRef } from 'react';
-import { View, StatusBar, StyleSheet, Animated } from 'react-native';
+import React, { useState, useRef, useEffect } from 'react';
+import { View, StatusBar, StyleSheet, Animated, ActivityIndicator, Text } from 'react-native';
 import { SafeAreaProvider, useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { useStore } from './src/store/useStore';
@@ -18,7 +18,17 @@ import { ProfileScreen } from './src/screens/ProfileScreen';
 
 const MainContent: React.FC = () => {
   const insets = useSafeAreaInsets();
-  const { points, streak, completedMissions, addPoints, completeMission } = useStore();
+  const { 
+    points, 
+    streak, 
+    todayCompletedMissions, 
+    missionStats,
+    isHydrated,
+    addPoints, 
+    completeMission,
+    checkAndResetDaily,
+    hydrate,
+  } = useStore();
   
   const [activeTab, setActiveTab] = useState('home');
   const [badgeModal, setBadgeModal] = useState<Badge | null>(null);
@@ -29,8 +39,20 @@ const MainContent: React.FC = () => {
   const level = Math.floor(points / 200) + 1;
   const nextBadge = BADGES.find(b => points < b.threshold) || BADGES[BADGES.length - 1];
 
+  // Load data on mount
+  useEffect(() => {
+    hydrate();
+  }, []);
+
+  // Check for daily reset whenever app becomes active
+  useEffect(() => {
+    if (isHydrated) {
+      checkAndResetDaily();
+    }
+  }, [isHydrated]);
+
   const handleMissionComplete = (mission: Mission) => {
-    if (completedMissions.includes(mission.id)) return;
+    if (todayCompletedMissions.includes(mission.id)) return;
     
     addPoints(mission.points);
     completeMission(mission.id);
@@ -83,7 +105,8 @@ const MainContent: React.FC = () => {
             level={level}
             nextBadge={nextBadge}
             missions={MISSIONS}
-            completedMissions={completedMissions}
+            completedMissions={todayCompletedMissions}
+            missionStats={missionStats}
             onComplete={handleMissionComplete}
             tip={tip}
             onMoreMissions={() => handleTabChange('mission')}
@@ -93,7 +116,8 @@ const MainContent: React.FC = () => {
         return (
           <MissionScreen
             missions={MISSIONS}
-            completedMissions={completedMissions}
+            completedMissions={todayCompletedMissions}
+            missionStats={missionStats}
             onComplete={handleMissionComplete}
           />
         );
@@ -105,14 +129,25 @@ const MainContent: React.FC = () => {
         return (
           <ProfileScreen
             level={level}
-            completedMissions={completedMissions.length}
+            completedMissions={todayCompletedMissions.length}
             points={points}
+            totalMissionCompletions={Object.values(missionStats).reduce((sum, count) => sum + count, 0)}
           />
         );
       default:
         return null;
     }
   };
+
+  // Loading state while hydrating
+  if (!isHydrated) {
+    return (
+      <View style={[styles.container, styles.loadingContainer]}>
+        <ActivityIndicator size="large" color="#22C55E" />
+        <Text style={styles.loadingText}>지구 지킴이 준비중...</Text>
+      </View>
+    );
+  }
 
   return (
     <View style={[styles.container, { paddingTop: insets.top }]}>
@@ -149,5 +184,15 @@ const styles = StyleSheet.create({
   },
   content: {
     flex: 1,
+  },
+  loadingContainer: {
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  loadingText: {
+    marginTop: 16,
+    fontSize: 16,
+    fontWeight: '700',
+    color: '#64748B',
   },
 });

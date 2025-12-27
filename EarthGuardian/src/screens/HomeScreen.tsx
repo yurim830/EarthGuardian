@@ -1,7 +1,7 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { View, Text, ScrollView, TouchableOpacity, StyleSheet, ViewStyle } from 'react-native';
 import { Info, Flame } from 'lucide-react-native';
-import { Mission, Badge } from '../types';
+import { Mission, Badge, MissionStats } from '../types';
 import { MissionCard } from '../components/MissionCard';
 
 interface HomeScreenProps {
@@ -11,6 +11,7 @@ interface HomeScreenProps {
   nextBadge: Badge;
   missions: Mission[];
   completedMissions: number[];
+  missionStats: MissionStats;
   onComplete: (mission: Mission) => void;
   tip: string;
   onMoreMissions: () => void;
@@ -23,10 +24,28 @@ export const HomeScreen: React.FC<HomeScreenProps> = React.memo(({
   nextBadge,
   missions,
   completedMissions,
+  missionStats,
   onComplete,
   tip,
   onMoreMissions,
 }) => {
+  // Smart mission selection: prioritize least achieved missions
+  const recommendedMissions = useMemo(() => {
+    // Separate completed and incomplete for today
+    const incomplete = missions.filter(m => !completedMissions.includes(m.id));
+    const completed = missions.filter(m => completedMissions.includes(m.id));
+    
+    // Sort incomplete by achievement count (least achieved first)
+    const sorted = incomplete.sort((a, b) => {
+      const countA = missionStats[a.id] || 0;
+      const countB = missionStats[b.id] || 0;
+      return countA - countB;
+    });
+    
+    // Show 3 incomplete missions, then fill with completed ones if needed
+    return [...sorted.slice(0, 3), ...completed].slice(0, 3);
+  }, [missions, completedMissions, missionStats]);
+
   return (
     <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
       {/* Profile Card */}
@@ -41,10 +60,12 @@ export const HomeScreen: React.FC<HomeScreenProps> = React.memo(({
               <View style={styles.levelTag}>
                 <Text style={styles.levelText}>LV.{level}</Text>
               </View>
-              <View style={styles.streakBadge}>
-                <Flame size={14} color="#F97316" fill="#F97316" />
-                <Text style={styles.streakText}>{streak}일 연속</Text>
-              </View>
+              {streak > 0 && (
+                <View style={styles.streakBadge}>
+                  <Flame size={14} color="#F97316" fill="#F97316" />
+                  <Text style={styles.streakText}>{streak}일 연속</Text>
+                </View>
+              )}
             </View>
           </View>
         </View>
@@ -65,6 +86,22 @@ export const HomeScreen: React.FC<HomeScreenProps> = React.memo(({
         </View>
       </View>
 
+      {/* Today's Progress */}
+      <View style={styles.progressSection}>
+        <Text style={styles.progressTitle}>오늘의 실천</Text>
+        <View style={styles.progressStats}>
+          <View style={styles.progressStatItem}>
+            <Text style={styles.progressStatValue}>{completedMissions.length}</Text>
+            <Text style={styles.progressStatLabel}>완료한 미션</Text>
+          </View>
+          <View style={styles.progressStatDivider} />
+          <View style={styles.progressStatItem}>
+            <Text style={styles.progressStatValue}>{missions.length - completedMissions.length}</Text>
+            <Text style={styles.progressStatLabel}>남은 미션</Text>
+          </View>
+        </View>
+      </View>
+
       {/* Today's Missions */}
       <View style={styles.section}>
         <View style={styles.sectionHeader}>
@@ -73,13 +110,19 @@ export const HomeScreen: React.FC<HomeScreenProps> = React.memo(({
             <Text style={styles.moreButton}>모두 보기</Text>
           </TouchableOpacity>
         </View>
-        {missions.slice(0, 3).map((mission) => (
+        <Text style={styles.sectionSubtitle}>
+          {completedMissions.length === 0 
+            ? '아직 도전하지 않은 미션부터 시작해볼까요?'
+            : '멋져요! 계속 도전해보세요! 💪'}
+        </Text>
+        {recommendedMissions.map((mission) => (
           <MissionCard
             key={mission.id}
             mission={mission}
             isCompleted={completedMissions.includes(mission.id)}
             onComplete={onComplete}
             variant="summary"
+            completionCount={missionStats[mission.id] || 0}
           />
         ))}
       </View>
@@ -109,7 +152,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.05,
     shadowRadius: 15,
     elevation: 4,
-    marginBottom: 30,
+    marginBottom: 20,
   },
   profileInfo: {
     flexDirection: 'row',
@@ -189,6 +232,45 @@ const styles = StyleSheet.create({
     height: '100%',
     backgroundColor: '#22C55E',
   },
+  progressSection: {
+    backgroundColor: '#FFF',
+    borderRadius: 24,
+    padding: 20,
+    marginBottom: 20,
+    elevation: 2,
+  },
+  progressTitle: {
+    fontSize: 16,
+    fontWeight: '900',
+    color: '#1E293B',
+    marginBottom: 16,
+    textAlign: 'center',
+  },
+  progressStats: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-around',
+  },
+  progressStatItem: {
+    alignItems: 'center',
+    flex: 1,
+  },
+  progressStatValue: {
+    fontSize: 32,
+    fontWeight: '900',
+    color: '#22C55E',
+  },
+  progressStatLabel: {
+    fontSize: 12,
+    fontWeight: '600',
+    color: '#64748B',
+    marginTop: 4,
+  },
+  progressStatDivider: {
+    width: 1,
+    height: 40,
+    backgroundColor: '#E2E8F0',
+  },
   section: {
     marginBottom: 30,
   },
@@ -196,12 +278,18 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'flex-end',
-    marginBottom: 16,
+    marginBottom: 8,
   },
   sectionTitle: {
     fontSize: 20,
     fontWeight: '900',
     color: '#1E293B',
+  },
+  sectionSubtitle: {
+    fontSize: 13,
+    color: '#64748B',
+    marginBottom: 16,
+    fontWeight: '600',
   },
   moreButton: {
     fontSize: 13,
