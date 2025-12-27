@@ -8,7 +8,11 @@ interface BadgeModalProps {
   onClose: () => void;
 }
 
-export const BadgeModal: React.FC<BadgeModalProps> = ({ badge, visible, onClose }) => {
+export const BadgeModal: React.FC<BadgeModalProps> = ({
+  badge,
+  visible,
+  onClose,
+}) => {
   if (!badge) return null;
 
   const Icon = badge.icon;
@@ -17,7 +21,9 @@ export const BadgeModal: React.FC<BadgeModalProps> = ({ badge, visible, onClose 
     <Modal visible={visible} transparent animationType="fade">
       <View style={styles.backdrop}>
         <View style={styles.content}>
-          <View style={[styles.iconContainer, { backgroundColor: badge.color }]}>
+          <View
+            style={[styles.iconContainer, { backgroundColor: badge.color }]}
+          >
             <Icon size={60} color="#FFF" />
           </View>
           <Text style={styles.title}>우와! 대단해요! 🎉</Text>

@@ -11,96 +11,126 @@ interface MissionCardProps {
   completionCount?: number;
 }
 
-export const MissionCard: React.FC<MissionCardProps> = React.memo(({ 
-  mission, 
-  isCompleted, 
-  onComplete,
-  variant = 'full',
-  completionCount = 0,
-}) => {
-  const getCategoryIcon = () => {
-    const iconProps = { color: mission.iconColor, size: variant === 'full' ? 32 : 18 };
-    
-    switch (mission.category) {
-      case 'water': return <Droplet {...iconProps} />;
-      case 'energy': return <Zap {...iconProps} />;
-      case 'forest': return <Trees {...iconProps} />;
-      case 'recycle': return <Recycle {...iconProps} />;
-    }
-  };
+export const MissionCard: React.FC<MissionCardProps> = React.memo(
+  ({
+    mission,
+    isCompleted,
+    onComplete,
+    variant = 'full',
+    completionCount = 0,
+  }) => {
+    const getCategoryIcon = () => {
+      const iconProps = {
+        color: mission.iconColor,
+        size: variant === 'full' ? 32 : 18,
+      };
 
-  if (variant === 'summary') {
-    return (
-      <View style={[styles.summaryCard, isCompleted && styles.summaryCardCompleted]}>
-        <View style={[styles.summaryIcon, { backgroundColor: mission.color }]}>
-          {getCategoryIcon()}
-        </View>
-        <View style={styles.summaryContent}>
-          <View style={styles.summaryTitleRow}>
-            <Text style={[styles.summaryTitle, isCompleted && styles.textCompleted]}>
-              {mission.title}
-            </Text>
-            {completionCount > 0 && (
-              <View style={styles.countBadge}>
-                <Text style={styles.countBadgeText}>×{completionCount}</Text>
-              </View>
-            )}
-          </View>
-          <Text style={styles.summaryPoints}>+{mission.points} EXP</Text>
-        </View>
-        {!isCompleted && (
-          <TouchableOpacity 
-            style={styles.summaryButton} 
-            onPress={() => onComplete(mission)}
+      switch (mission.category) {
+        case 'water':
+          return <Droplet {...iconProps} />;
+        case 'energy':
+          return <Zap {...iconProps} />;
+        case 'forest':
+          return <Trees {...iconProps} />;
+        case 'recycle':
+          return <Recycle {...iconProps} />;
+      }
+    };
+
+    if (variant === 'summary') {
+      return (
+        <View
+          style={[
+            styles.summaryCard,
+            isCompleted && styles.summaryCardCompleted,
+          ]}
+        >
+          <View
+            style={[styles.summaryIcon, { backgroundColor: mission.color }]}
           >
-            <Text style={styles.summaryButtonText}>했어!</Text>
-          </TouchableOpacity>
-        )}
-      </View>
-    );
-  }
-
-  return (
-    <View style={styles.fullCard}>
-      <View style={styles.fullHeader}>
-        <View style={[styles.fullIcon, { backgroundColor: mission.color }]}>
-          {getCategoryIcon()}
-        </View>
-        <View style={styles.fullHeaderText}>
-          <Text style={styles.category}>{mission.category.toUpperCase()}</Text>
-          <Text style={styles.title}>{mission.title}</Text>
-        </View>
-        <View style={styles.pointsContainer}>
-          <Text style={styles.points}>+{mission.points}⭐</Text>
-          {completionCount > 0 && (
-            <Text style={styles.completionCountText}>누적 {completionCount}회</Text>
+            {getCategoryIcon()}
+          </View>
+          <View style={styles.summaryContent}>
+            <View style={styles.summaryTitleRow}>
+              <Text
+                style={[
+                  styles.summaryTitle,
+                  isCompleted && styles.textCompleted,
+                ]}
+              >
+                {mission.title}
+              </Text>
+              {completionCount > 0 && (
+                <View style={styles.countBadge}>
+                  <Text style={styles.countBadgeText}>×{completionCount}</Text>
+                </View>
+              )}
+            </View>
+            <Text style={styles.summaryGuide}> {mission.guide}</Text>
+            <Text style={styles.summaryPoints}>+{mission.points} EXP</Text>
+          </View>
+          {!isCompleted && (
+            <TouchableOpacity
+              style={styles.summaryButton}
+              onPress={() => onComplete(mission)}
+            >
+              <Text style={styles.summaryButtonText}>완료!</Text>
+            </TouchableOpacity>
           )}
         </View>
+      );
+    }
+
+    return (
+      <View style={styles.fullCard}>
+        <View style={styles.fullHeader}>
+          <View style={[styles.fullIcon, { backgroundColor: mission.color }]}>
+            {getCategoryIcon()}
+          </View>
+          <View style={styles.fullHeaderText}>
+            <Text style={styles.category}>
+              {mission.category.toUpperCase()}
+            </Text>
+            <Text style={styles.title}>{mission.title}</Text>
+          </View>
+          <View style={styles.pointsContainer}>
+            <Text style={styles.points}>+{mission.points}⭐</Text>
+            {completionCount > 0 && (
+              <Text style={styles.completionCountText}>
+                누적 {completionCount}회
+              </Text>
+            )}
+          </View>
+        </View>
+
+        <View style={styles.guideContainer}>
+          <Text style={styles.guideText}>💡 {mission.guide}</Text>
+        </View>
+
+        <TouchableOpacity
+          disabled={isCompleted}
+          style={[
+            styles.actionButton,
+            isCompleted && styles.actionButtonDisabled,
+          ]}
+          onPress={() => onComplete(mission)}
+        >
+          <Text style={styles.actionButtonText}>
+            {isCompleted ? '오늘 실천 완료!' : '오늘 이거 했어요!'}
+          </Text>
+        </TouchableOpacity>
       </View>
-      
-      <View style={styles.guideContainer}>
-        <Text style={styles.guideText}>💡 {mission.guide}</Text>
-      </View>
-      
-      <TouchableOpacity 
-        disabled={isCompleted}
-        style={[styles.actionButton, isCompleted && styles.actionButtonDisabled]}
-        onPress={() => onComplete(mission)}
-      >
-        <Text style={styles.actionButtonText}>
-          {isCompleted ? '오늘 실천 완료!' : '오늘 이거 했어요!'}
-        </Text>
-      </TouchableOpacity>
-    </View>
-  );
-}, (prevProps, nextProps) => {
-  return (
-    prevProps.mission.id === nextProps.mission.id &&
-    prevProps.isCompleted === nextProps.isCompleted &&
-    prevProps.variant === nextProps.variant &&
-    prevProps.completionCount === nextProps.completionCount
-  );
-});
+    );
+  },
+  (prevProps, nextProps) => {
+    return (
+      prevProps.mission.id === nextProps.mission.id &&
+      prevProps.isCompleted === nextProps.isCompleted &&
+      prevProps.variant === nextProps.variant &&
+      prevProps.completionCount === nextProps.completionCount
+    );
+  },
+);
 
 const styles = StyleSheet.create({
   // Summary variant styles
@@ -124,6 +154,7 @@ const styles = StyleSheet.create({
     borderRadius: 14,
     alignItems: 'center',
     justifyContent: 'center',
+    flexShrink: 0,
   },
   summaryContent: {
     flex: 1,
@@ -133,6 +164,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: 8,
+    marginBottom: 6,
   },
   summaryTitle: {
     fontSize: 16,
@@ -151,17 +183,23 @@ const styles = StyleSheet.create({
     fontWeight: '900',
     color: '#16A34A',
   },
+  summaryGuide: {
+    fontSize: 12,
+    color: '#64748B',
+    lineHeight: 18,
+    marginBottom: 6,
+  },
   summaryPoints: {
     fontSize: 11,
     fontWeight: '900',
     color: '#F97316',
-    marginTop: 2,
   },
   summaryButton: {
     backgroundColor: '#22C55E',
     paddingHorizontal: 16,
     paddingVertical: 10,
     borderRadius: 14,
+    marginLeft: 8,
   },
   summaryButtonText: {
     color: '#FFF',
@@ -172,7 +210,7 @@ const styles = StyleSheet.create({
     textDecorationLine: 'line-through',
     color: '#94A3B8',
   },
-  
+
   // Full variant styles
   fullCard: {
     backgroundColor: '#FFF',

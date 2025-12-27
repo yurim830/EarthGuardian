@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { AppState, MissionStats } from '../types';
+import { AppState, MissionStats, UserProfile } from '../types';
 
 const STORAGE_KEY = '@eco_guardian_data';
 
@@ -14,7 +14,7 @@ const calculateStreak = (lastDate: string): number => {
   const last = new Date(lastDate);
   const diffTime = today.getTime() - last.getTime();
   const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
-  
+
   if (diffDays === 0) return 1; // Same day
   if (diffDays === 1) return 1; // Continue streak (will be incremented)
   return 0; // Streak broken
@@ -29,6 +29,7 @@ const saveStateToStorage = async (state: any) => {
       lastActiveDate: state.lastActiveDate,
       todayCompletedMissions: state.todayCompletedMissions,
       missionStats: state.missionStats,
+      userProfile: state.userProfile,
     };
     await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(toSave));
   } catch (error) {
@@ -42,6 +43,7 @@ export const useStore = create<AppState>((set, get) => ({
   lastActiveDate: getTodayDateString(),
   todayCompletedMissions: [],
   missionStats: {},
+  userProfile: { name: '지구대장 OO', gender: 'boy' },
   isHydrated: false,
 
   // Load data from AsyncStorage
@@ -56,8 +58,13 @@ export const useStore = create<AppState>((set, get) => ({
           lastActiveDate: data.lastActiveDate || getTodayDateString(),
           todayCompletedMissions: data.todayCompletedMissions || [],
           missionStats: data.missionStats || {},
+          userProfile: data.userProfile || {
+            name: '지구대장 민준',
+            gender: 'boy',
+          },
           isHydrated: true,
         });
+        // Check if we need to reset daily missions
         get().checkAndResetDaily();
       } else {
         set({ isHydrated: true });
@@ -72,38 +79,44 @@ export const useStore = create<AppState>((set, get) => ({
   checkAndResetDaily: () => {
     const state = get();
     const today = getTodayDateString();
-    
+
     if (state.lastActiveDate !== today) {
-      const newStreak = state.todayCompletedMissions.length > 0 
-        ? calculateStreak(state.lastActiveDate) + state.streak
-        : 0;
-      
+      const newStreak =
+        state.todayCompletedMissions.length > 0
+          ? calculateStreak(state.lastActiveDate) + state.streak
+          : 0;
+
       set({
         lastActiveDate: today,
         todayCompletedMissions: [],
         streak: newStreak,
       });
-      
+
       // Save to AsyncStorage
       saveStateToStorage(get());
     }
   },
 
-  addPoints: (val) => {
-    set((state) => ({ points: state.points + val }));
+  addPoints: val => {
+    set(state => ({ points: state.points + val }));
     saveStateToStorage(get());
   },
 
-  completeMission: (id) => {
-    set((state) => {
+  completeMission: id => {
+    set(state => {
       const newMissionStats = { ...state.missionStats };
       newMissionStats[id] = (newMissionStats[id] || 0) + 1;
-      
+
       return {
         todayCompletedMissions: [...state.todayCompletedMissions, id],
         missionStats: newMissionStats,
       };
     });
+    saveStateToStorage(get());
+  },
+
+  updateProfile: (profile: UserProfile) => {
+    set({ userProfile: profile });
     saveStateToStorage(get());
   },
 

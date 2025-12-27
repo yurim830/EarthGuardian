@@ -1,7 +1,14 @@
 import React, { useMemo } from 'react';
-import { View, Text, ScrollView, TouchableOpacity, StyleSheet, ViewStyle } from 'react-native';
+import {
+  View,
+  Text,
+  ScrollView,
+  TouchableOpacity,
+  StyleSheet,
+  ViewStyle,
+} from 'react-native';
 import { Info, Flame } from 'lucide-react-native';
-import { Mission, Badge, MissionStats } from '../types';
+import { Mission, Badge, MissionStats, UserProfile } from '../types';
 import { MissionCard } from '../components/MissionCard';
 
 interface HomeScreenProps {
@@ -12,134 +19,153 @@ interface HomeScreenProps {
   missions: Mission[];
   completedMissions: number[];
   missionStats: MissionStats;
+  userProfile: UserProfile;
   onComplete: (mission: Mission) => void;
   tip: string;
   onMoreMissions: () => void;
 }
 
-export const HomeScreen: React.FC<HomeScreenProps> = React.memo(({
-  points,
-  streak,
-  level,
-  nextBadge,
-  missions,
-  completedMissions,
-  missionStats,
-  onComplete,
-  tip,
-  onMoreMissions,
-}) => {
-  // Smart mission selection: prioritize least achieved missions
-  const recommendedMissions = useMemo(() => {
-    // Separate completed and incomplete for today
-    const incomplete = missions.filter(m => !completedMissions.includes(m.id));
-    const completed = missions.filter(m => completedMissions.includes(m.id));
-    
-    // Sort incomplete by achievement count (least achieved first)
-    const sorted = incomplete.sort((a, b) => {
-      const countA = missionStats[a.id] || 0;
-      const countB = missionStats[b.id] || 0;
-      return countA - countB;
-    });
-    
-    // Show 3 incomplete missions, then fill with completed ones if needed
-    return [...sorted.slice(0, 3), ...completed].slice(0, 3);
-  }, [missions, completedMissions, missionStats]);
+export const HomeScreen: React.FC<HomeScreenProps> = React.memo(
+  ({
+    points,
+    streak,
+    level,
+    nextBadge,
+    missions,
+    completedMissions,
+    missionStats,
+    userProfile,
+    onComplete,
+    tip,
+    onMoreMissions,
+  }) => {
+    // Smart mission selection: prioritize least achieved missions
+    const recommendedMissions = useMemo(() => {
+      // Separate completed and incomplete for today
+      const incomplete = missions.filter(
+        m => !completedMissions.includes(m.id),
+      );
+      const completed = missions.filter(m => completedMissions.includes(m.id));
 
-  return (
-    <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
-      {/* Profile Card */}
-      <View style={styles.profileCard}>
-        <View style={styles.profileInfo}>
-          <View style={styles.avatar}>
-            <Text style={styles.avatarEmoji}>👦</Text>
-          </View>
-          <View>
-            <Text style={styles.userName}>지구대장 민준</Text>
-            <View style={styles.badgeRow}>
-              <View style={styles.levelTag}>
-                <Text style={styles.levelText}>LV.{level}</Text>
-              </View>
-              {streak > 0 && (
-                <View style={styles.streakBadge}>
-                  <Flame size={14} color="#F97316" fill="#F97316" />
-                  <Text style={styles.streakText}>{streak}일 연속</Text>
+      // Sort incomplete by achievement count (least achieved first)
+      const sorted = incomplete.sort((a, b) => {
+        const countA = missionStats[a.id] || 0;
+        const countB = missionStats[b.id] || 0;
+        return countA - countB;
+      });
+
+      // Show 3 incomplete missions, then fill with completed ones if needed
+      return [...sorted.slice(0, 3), ...completed].slice(0, 3);
+    }, [missions, completedMissions, missionStats]);
+
+    return (
+      <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
+        {/* Profile Card */}
+        <View style={styles.profileCard}>
+          <View style={styles.profileInfo}>
+            <View style={styles.avatar}>
+              <Text style={styles.avatarEmoji}>
+                {userProfile.gender === 'boy' ? '👦' : '👧'}
+              </Text>
+            </View>
+            <View>
+              <Text style={styles.userName}>{userProfile.name}</Text>
+              <View style={styles.badgeRow}>
+                <View style={styles.levelTag}>
+                  <Text style={styles.levelText}>LV.{level}</Text>
                 </View>
-              )}
+                {streak > 0 && (
+                  <View style={styles.streakBadge}>
+                    <Flame size={14} color="#F97316" fill="#F97316" />
+                    <Text style={styles.streakText}>{streak}일 연속</Text>
+                  </View>
+                )}
+              </View>
+            </View>
+          </View>
+
+          <View style={styles.expSection}>
+            <View style={styles.expLabels}>
+              <Text style={styles.expLabel}>다음 뱃지: {nextBadge.name}</Text>
+              <Text style={styles.expValue}>
+                {points} / {nextBadge.threshold}⭐
+              </Text>
+            </View>
+            <View style={styles.progressBar}>
+              <View
+                style={[
+                  styles.progressFill,
+                  {
+                    width: `${Math.min(
+                      (points / nextBadge.threshold) * 100,
+                      100,
+                    )}%`,
+                  } as ViewStyle,
+                ]}
+              />
             </View>
           </View>
         </View>
-        
-        <View style={styles.expSection}>
-          <View style={styles.expLabels}>
-            <Text style={styles.expLabel}>다음 뱃지: {nextBadge.name}</Text>
-            <Text style={styles.expValue}>{points} / {nextBadge.threshold}⭐</Text>
+
+        {/* Today's Progress */}
+        <View style={styles.progressSection}>
+          <Text style={styles.progressTitle}>오늘의 실천</Text>
+          <View style={styles.progressStats}>
+            <View style={styles.progressStatItem}>
+              <Text style={styles.progressStatValue}>
+                {completedMissions.length}
+              </Text>
+              <Text style={styles.progressStatLabel}>완료한 미션</Text>
+            </View>
+            <View style={styles.progressStatDivider} />
+            <View style={styles.progressStatItem}>
+              <Text style={styles.progressStatValue}>
+                {missions.length - completedMissions.length}
+              </Text>
+              <Text style={styles.progressStatLabel}>남은 미션</Text>
+            </View>
           </View>
-          <View style={styles.progressBar}>
-            <View 
-              style={[
-                styles.progressFill, 
-                { width: `${Math.min((points / nextBadge.threshold) * 100, 100)}%` } as ViewStyle
-              ]} 
+        </View>
+
+        {/* Today's Missions */}
+        <View style={styles.section}>
+          <View style={styles.sectionHeader}>
+            <Text style={styles.sectionTitle}>오늘의 지구 구하기 🔥</Text>
+            <TouchableOpacity onPress={onMoreMissions}>
+              <Text style={styles.moreButton}>모두 보기</Text>
+            </TouchableOpacity>
+          </View>
+          <Text style={styles.sectionSubtitle}>
+            {completedMissions.length === 0
+              ? '아직 도전하지 않은 미션부터 시작해볼까요?'
+              : '멋져요! 계속 도전해보세요! 💪'}
+          </Text>
+          {recommendedMissions.map(mission => (
+            <MissionCard
+              key={mission.id}
+              mission={mission}
+              isCompleted={completedMissions.includes(mission.id)}
+              onComplete={onComplete}
+              variant="summary"
+              completionCount={missionStats[mission.id] || 0}
             />
+          ))}
+        </View>
+
+        {/* Daily Tip */}
+        <View style={styles.tipCard}>
+          <Info color="#3B82F6" size={24} />
+          <View style={styles.tipContent}>
+            <Text style={styles.tipTitle}>지구 구조대 꿀팁!</Text>
+            <Text style={styles.tipBody}>{tip}</Text>
           </View>
         </View>
-      </View>
 
-      {/* Today's Progress */}
-      <View style={styles.progressSection}>
-        <Text style={styles.progressTitle}>오늘의 실천</Text>
-        <View style={styles.progressStats}>
-          <View style={styles.progressStatItem}>
-            <Text style={styles.progressStatValue}>{completedMissions.length}</Text>
-            <Text style={styles.progressStatLabel}>완료한 미션</Text>
-          </View>
-          <View style={styles.progressStatDivider} />
-          <View style={styles.progressStatItem}>
-            <Text style={styles.progressStatValue}>{missions.length - completedMissions.length}</Text>
-            <Text style={styles.progressStatLabel}>남은 미션</Text>
-          </View>
-        </View>
-      </View>
-
-      {/* Today's Missions */}
-      <View style={styles.section}>
-        <View style={styles.sectionHeader}>
-          <Text style={styles.sectionTitle}>오늘의 지구 구하기 🔥</Text>
-          <TouchableOpacity onPress={onMoreMissions}>
-            <Text style={styles.moreButton}>모두 보기</Text>
-          </TouchableOpacity>
-        </View>
-        <Text style={styles.sectionSubtitle}>
-          {completedMissions.length === 0 
-            ? '아직 도전하지 않은 미션부터 시작해볼까요?'
-            : '멋져요! 계속 도전해보세요! 💪'}
-        </Text>
-        {recommendedMissions.map((mission) => (
-          <MissionCard
-            key={mission.id}
-            mission={mission}
-            isCompleted={completedMissions.includes(mission.id)}
-            onComplete={onComplete}
-            variant="summary"
-            completionCount={missionStats[mission.id] || 0}
-          />
-        ))}
-      </View>
-
-      {/* Daily Tip */}
-      <View style={styles.tipCard}>
-        <Info color="#3B82F6" size={24} />
-        <View style={styles.tipContent}>
-          <Text style={styles.tipTitle}>지구 구조대 꿀팁!</Text>
-          <Text style={styles.tipBody}>{tip}</Text>
-        </View>
-      </View>
-      
-      <View style={{ height: 120 }} />
-    </ScrollView>
-  );
-});
+        <View style={{ height: 120 }} />
+      </ScrollView>
+    );
+  },
+);
 
 const styles = StyleSheet.create({
   container: {

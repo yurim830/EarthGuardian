@@ -1,6 +1,16 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { View, StatusBar, StyleSheet, Animated, ActivityIndicator, Text } from 'react-native';
-import { SafeAreaProvider, useSafeAreaInsets } from 'react-native-safe-area-context';
+import {
+  View,
+  StatusBar,
+  StyleSheet,
+  Animated,
+  ActivityIndicator,
+  Text,
+} from 'react-native';
+import {
+  SafeAreaProvider,
+  useSafeAreaInsets,
+} from 'react-native-safe-area-context';
 
 import { useStore } from './src/store/useStore';
 import { MISSIONS } from './src/constants/missions';
@@ -18,18 +28,20 @@ import { ProfileScreen } from './src/screens/ProfileScreen';
 
 const MainContent: React.FC = () => {
   const insets = useSafeAreaInsets();
-  const { 
-    points, 
-    streak, 
-    todayCompletedMissions, 
+  const {
+    points,
+    streak,
+    todayCompletedMissions,
     missionStats,
+    userProfile,
     isHydrated,
-    addPoints, 
+    addPoints,
     completeMission,
     checkAndResetDaily,
     hydrate,
+    updateProfile,
   } = useStore();
-  
+
   const [activeTab, setActiveTab] = useState('home');
   const [badgeModal, setBadgeModal] = useState<Badge | null>(null);
   const [tip, setTip] = useState(DAILY_TIPS[0]);
@@ -37,7 +49,8 @@ const MainContent: React.FC = () => {
   const fadeAnim = useRef(new Animated.Value(1)).current;
   const isAnimating = useRef(false);
   const level = Math.floor(points / 200) + 1;
-  const nextBadge = BADGES.find(b => points < b.threshold) || BADGES[BADGES.length - 1];
+  const nextBadge =
+    BADGES.find(b => points < b.threshold) || BADGES[BADGES.length - 1];
 
   // Load data on mount
   useEffect(() => {
@@ -53,40 +66,40 @@ const MainContent: React.FC = () => {
 
   const handleMissionComplete = (mission: Mission) => {
     if (todayCompletedMissions.includes(mission.id)) return;
-    
+
     addPoints(mission.points);
     completeMission(mission.id);
-    
+
     const newBadge = BADGES.find(
-      b => points + mission.points >= b.threshold && points < b.threshold
+      b => points + mission.points >= b.threshold && points < b.threshold,
     );
     if (newBadge) setBadgeModal(newBadge);
   };
 
   const handleTabChange = (tabName: string) => {
     if (isAnimating.current || activeTab === tabName) return;
-    
+
     isAnimating.current = true;
-    
+
     // Fade out current screen
-    Animated.timing(fadeAnim, { 
-      toValue: 0, 
-      duration: 120, 
-      useNativeDriver: true 
+    Animated.timing(fadeAnim, {
+      toValue: 0,
+      duration: 120,
+      useNativeDriver: true,
     }).start(() => {
       // Small delay to ensure fade-out is visually complete
       setTimeout(() => {
         // Change content while screen is invisible
         setActiveTab(tabName);
         setTip(DAILY_TIPS[Math.floor(Math.random() * DAILY_TIPS.length)]);
-        
+
         // Use requestAnimationFrame to ensure render is complete
         requestAnimationFrame(() => {
           // Fade in new screen
-          Animated.timing(fadeAnim, { 
-            toValue: 1, 
-            duration: 120, 
-            useNativeDriver: true 
+          Animated.timing(fadeAnim, {
+            toValue: 1,
+            duration: 120,
+            useNativeDriver: true,
           }).start(() => {
             isAnimating.current = false;
           });
@@ -107,6 +120,7 @@ const MainContent: React.FC = () => {
             missions={MISSIONS}
             completedMissions={todayCompletedMissions}
             missionStats={missionStats}
+            userProfile={userProfile}
             onComplete={handleMissionComplete}
             tip={tip}
             onMoreMissions={() => handleTabChange('mission')}
@@ -122,16 +136,19 @@ const MainContent: React.FC = () => {
           />
         );
       case 'badge':
-        return (
-          <BadgeScreen badges={BADGES} points={points} />
-        );
+        return <BadgeScreen badges={BADGES} points={points} />;
       case 'profile':
         return (
           <ProfileScreen
             level={level}
             completedMissions={todayCompletedMissions.length}
             points={points}
-            totalMissionCompletions={Object.values(missionStats).reduce((sum, count) => sum + count, 0)}
+            totalMissionCompletions={Object.values(missionStats).reduce(
+              (sum, count) => sum + count,
+              0,
+            )}
+            userProfile={userProfile}
+            onProfileUpdate={updateProfile}
           />
         );
       default:
@@ -159,7 +176,7 @@ const MainContent: React.FC = () => {
       </Animated.View>
 
       <BottomNav activeTab={activeTab} onTabChange={handleTabChange} />
-      
+
       <BadgeModal
         badge={badgeModal}
         visible={!!badgeModal}

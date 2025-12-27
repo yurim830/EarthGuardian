@@ -15,25 +15,25 @@ const TABS = [
   { id: 'profile', icon: User, label: '내정보' },
 ];
 
-export const BottomNav: React.FC<BottomNavProps> = ({ activeTab, onTabChange }) => {
+export const BottomNav: React.FC<BottomNavProps> = ({
+  activeTab,
+  onTabChange,
+}) => {
   const insets = useSafeAreaInsets();
 
   return (
     <View style={[styles.container, { paddingBottom: insets.bottom + 10 }]}>
-      {TABS.map((item) => {
+      {TABS.map(item => {
         const Icon = item.icon;
         const isActive = activeTab === item.id;
-        
+
         return (
           <TouchableOpacity
             key={item.id}
             style={styles.navItem}
             onPress={() => onTabChange(item.id)}
           >
-            <Icon 
-              size={24} 
-              color={isActive ? '#16A34A' : '#CBD5E1'} 
-            />
+            <Icon size={24} color={isActive ? '#16A34A' : '#CBD5E1'} />
             <Text style={[styles.navText, isActive && styles.navTextActive]}>
               {item.label}
             </Text>

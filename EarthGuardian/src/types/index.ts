@@ -20,16 +20,23 @@ export interface MissionStats {
   [missionId: number]: number; // missionId -> total completion count
 }
 
+export interface UserProfile {
+  name: string;
+  gender: 'boy' | 'girl';
+}
+
 export interface AppState {
   points: number;
   streak: number;
   lastActiveDate: string;
   todayCompletedMissions: number[];
-  missionStats: MissionStats; // Track total completions per mission
+  missionStats: MissionStats;
+  userProfile: UserProfile;
   isHydrated: boolean;
   addPoints: (val: number) => void;
   completeMission: (id: number) => void;
   checkAndResetDaily: () => void;
   hydrate: () => Promise<void>;
   saveToStorage: () => Promise<void>;
+  updateProfile: (profile: UserProfile) => void;
 }

@@ -2,190 +2,190 @@ import { Mission } from '../types';
 
 export const MISSIONS: Mission[] = [
   // 💧 물 절약 (1-5)
-  { 
-    id: 1, 
-    category: 'water', 
-    title: '샤워 송 챌린지', 
-    guide: '좋아하는 노래 3곡 끝나기 전에 샤워 마치기', 
-    color: '#E0F2FE', 
-    iconColor: '#3B82F6', 
-    points: 20 
+  {
+    id: 1,
+    category: 'water',
+    title: '샤워 송 챌린지',
+    guide: '좋아하는 노래 3곡 끝나기 전에 샤워 마치기',
+    color: '#E0F2FE',
+    iconColor: '#3B82F6',
+    points: 20,
   },
-  { 
-    id: 2, 
-    category: 'water', 
-    title: '보글보글 양치 컵', 
-    guide: '양치 컵에 물 담아 3번 헹구기', 
-    color: '#E0F2FE', 
-    iconColor: '#3B82F6', 
-    points: 15 
+  {
+    id: 2,
+    category: 'water',
+    title: '보글보글 양치 컵',
+    guide: '양치 컵에 물 담아 3번 헹구기',
+    color: '#E0F2FE',
+    iconColor: '#3B82F6',
+    points: 15,
   },
-  { 
-    id: 3, 
-    category: 'water', 
-    title: '수도꼭지 꽉!', 
-    guide: '수도꼭지에서 물 안 떨어지게 꽉 잠그기', 
-    color: '#E0F2FE', 
-    iconColor: '#3B82F6', 
-    points: 10 
+  {
+    id: 3,
+    category: 'water',
+    title: '수도꼭지 꽉!',
+    guide: '수도꼭지에서 물 안 떨어지게 꽉 잠그기',
+    color: '#E0F2FE',
+    iconColor: '#3B82F6',
+    points: 10,
   },
-  { 
-    id: 4, 
-    category: 'water', 
-    title: '빗물 박사', 
-    guide: '비 오는 날, 식물들에게 줄 물 받아두기', 
-    color: '#E0F2FE', 
-    iconColor: '#3B82F6', 
-    points: 20 
+  {
+    id: 4,
+    category: 'water',
+    title: '빗물 박사',
+    guide: '비 오는 날, 식물들에게 줄 물 받아두기',
+    color: '#E0F2FE',
+    iconColor: '#3B82F6',
+    points: 20,
   },
-  { 
-    id: 5, 
-    category: 'water', 
-    title: '설거지 도우미', 
-    guide: '부모님이 설거지할 때 물 아껴 쓰시는지 칭찬하기', 
-    color: '#E0F2FE', 
-    iconColor: '#3B82F6', 
-    points: 15 
+  {
+    id: 5,
+    category: 'water',
+    title: '설거지 도우미',
+    guide: '부모님이 설거지할 때 물 아껴 쓰시는지 칭찬하기',
+    color: '#E0F2FE',
+    iconColor: '#3B82F6',
+    points: 15,
   },
-  
+
   // 🔌 에너지 절약 (6-10)
-  { 
-    id: 6, 
-    category: 'energy', 
-    title: '스위치 하이파이브', 
-    guide: '방 나갈 때 불 끄며 하이파이브!', 
-    color: '#FEF9C3', 
-    iconColor: '#EAB308', 
-    points: 20 
+  {
+    id: 6,
+    category: 'energy',
+    title: '스위치 하이파이브',
+    guide: '방 나갈 때 불 끄며 하이파이브!',
+    color: '#FEF9C3',
+    iconColor: '#EAB308',
+    points: 20,
   },
-  { 
-    id: 7, 
-    category: 'energy', 
-    title: '유령 전기 잡기', 
-    guide: '안 쓰는 가전제품 코드 뽑아 유령 전기 쫓기', 
-    color: '#FEF9C3', 
-    iconColor: '#EAB308', 
-    points: 25 
+  {
+    id: 7,
+    category: 'energy',
+    title: '유령 전기 잡기',
+    guide: '안 쓰는 가전제품 코드 뽑아 유령 전기 쫓기',
+    color: '#FEF9C3',
+    iconColor: '#EAB308',
+    points: 25,
   },
-  { 
-    id: 8, 
-    category: 'energy', 
-    title: '계단 탐험대', 
-    guide: '엘리베이터 대신 계단으로 올라가기', 
-    color: '#FEF9C3', 
-    iconColor: '#EAB308', 
-    points: 30 
+  {
+    id: 8,
+    category: 'energy',
+    title: '계단 탐험대',
+    guide: '엘리베이터 대신 계단으로 올라가기',
+    color: '#FEF9C3',
+    iconColor: '#EAB308',
+    points: 30,
   },
-  { 
-    id: 9, 
-    category: 'energy', 
-    title: '햇빛 조명', 
-    guide: '낮에는 불 끄고 창문 햇빛으로 책 읽기', 
-    color: '#FEF9C3', 
-    iconColor: '#EAB308', 
-    points: 15 
+  {
+    id: 9,
+    category: 'energy',
+    title: '햇빛 조명',
+    guide: '낮에는 불 끄고 창문 햇빛으로 책 읽기',
+    color: '#FEF9C3',
+    iconColor: '#EAB308',
+    points: 15,
   },
-  { 
-    id: 10, 
-    category: 'energy', 
-    title: 'TV 휴식 시간', 
-    guide: 'TV 끄고 가족과 30분 동안 대화하기', 
-    color: '#FEF9C3', 
-    iconColor: '#EAB308', 
-    points: 20 
+  {
+    id: 10,
+    category: 'energy',
+    title: 'TV 휴식 시간',
+    guide: 'TV 끄고 가족과 30분 동안 대화하기',
+    color: '#FEF9C3',
+    iconColor: '#EAB308',
+    points: 20,
   },
-  
+
   // 🌳 숲/생태계 (11-15)
-  { 
-    id: 11, 
-    category: 'forest', 
-    title: '종이 양면 화가', 
-    guide: '종이 앞뒷면 모두 사용하기', 
-    color: '#DCFCE7', 
-    iconColor: '#22C55E', 
-    points: 20 
+  {
+    id: 11,
+    category: 'forest',
+    title: '종이 양면 화가',
+    guide: '종이 앞뒷면 모두 사용하기',
+    color: '#DCFCE7',
+    iconColor: '#22C55E',
+    points: 20,
   },
-  { 
-    id: 12, 
-    category: 'forest', 
-    title: '손수건 히어로', 
-    guide: '휴지 대신 나만의 예쁜 손수건 사용하기', 
-    color: '#DCFCE7', 
-    iconColor: '#22C55E', 
-    points: 25 
+  {
+    id: 12,
+    category: 'forest',
+    title: '손수건 히어로',
+    guide: '휴지 대신 나만의 예쁜 손수건 사용하기',
+    color: '#DCFCE7',
+    iconColor: '#22C55E',
+    points: 25,
   },
-  { 
-    id: 13, 
-    category: 'forest', 
-    title: '나무 안아주기', 
-    guide: '산책하며 만난 나무에게 인사하기', 
-    color: '#DCFCE7', 
-    iconColor: '#22C55E', 
-    points: 10 
+  {
+    id: 13,
+    category: 'forest',
+    title: '나무 안아주기',
+    guide: '산책하며 만난 나무에게 인사하기',
+    color: '#DCFCE7',
+    iconColor: '#22C55E',
+    points: 10,
   },
-  { 
-    id: 14, 
-    category: 'forest', 
-    title: '뚜벅이 대장', 
-    guide: '가까운 거리는 튼튼한 다리로 걷기', 
-    color: '#DCFCE7', 
-    iconColor: '#22C55E', 
-    points: 30 
+  {
+    id: 14,
+    category: 'forest',
+    title: '뚜벅이 대장',
+    guide: '가까운 거리는 튼튼한 다리로 걷기',
+    color: '#DCFCE7',
+    iconColor: '#22C55E',
+    points: 30,
   },
-  { 
-    id: 15, 
-    category: 'forest', 
-    title: '친환경 탐정', 
-    guide: '학용품에서 친환경 마크 찾아보기', 
-    color: '#DCFCE7', 
-    iconColor: '#22C55E', 
-    points: 15 
+  {
+    id: 15,
+    category: 'forest',
+    title: '친환경 탐정',
+    guide: '학용품에서 친환경 마크 찾아보기',
+    color: '#DCFCE7',
+    iconColor: '#22C55E',
+    points: 15,
   },
-  
+
   // ♻️ 재활용 (16-20)
-  { 
-    id: 16, 
-    category: 'recycle', 
-    title: '라벨 떼기 챔피언', 
-    guide: '페트병 라벨 깨끗이 뜯어 버리기', 
-    color: '#ECFDF5', 
-    iconColor: '#10B981', 
-    points: 25 
+  {
+    id: 16,
+    category: 'recycle',
+    title: '라벨 떼기 챔피언',
+    guide: '페트병 라벨 깨끗이 뜯어 버리기',
+    color: '#ECFDF5',
+    iconColor: '#10B981',
+    points: 25,
   },
-  { 
-    id: 17, 
-    category: 'recycle', 
-    title: '뽀득뽀득 플라스틱', 
-    guide: '용기를 물로 깨끗이 씻어서 배출하기', 
-    color: '#ECFDF5', 
-    iconColor: '#10B981', 
-    points: 20 
+  {
+    id: 17,
+    category: 'recycle',
+    title: '뽀득뽀득 플라스틱',
+    guide: '용기를 물로 깨끗이 씻어서 배출하기',
+    color: '#ECFDF5',
+    iconColor: '#10B981',
+    points: 20,
   },
-  { 
-    id: 18, 
-    category: 'recycle', 
-    title: '텀블러 단짝', 
-    guide: '외출할 때 내 전용 컵 챙겨가기', 
-    color: '#ECFDF5', 
-    iconColor: '#10B981', 
-    points: 30 
+  {
+    id: 18,
+    category: 'recycle',
+    title: '텀블러 단짝',
+    guide: '외출할 때 내 전용 컵 챙겨가기',
+    color: '#ECFDF5',
+    iconColor: '#10B981',
+    points: 30,
   },
-  { 
-    id: 19, 
-    category: 'recycle', 
-    title: '이면지 수첩', 
-    guide: '남은 종이를 모아 나만의 비밀 수첩 만들기', 
-    color: '#ECFDF5', 
-    iconColor: '#10B981', 
-    points: 25 
+  {
+    id: 19,
+    category: 'recycle',
+    title: '이면지 수첩',
+    guide: '남은 종이를 모아 나만의 비밀 수첩 만들기',
+    color: '#ECFDF5',
+    iconColor: '#10B981',
+    points: 25,
   },
-  { 
-    id: 20, 
-    category: 'recycle', 
-    title: '장바구니 대장', 
-    guide: '마트에 갈 때 장바구니 직접 들기', 
-    color: '#ECFDF5', 
-    iconColor: '#10B981', 
-    points: 20 
+  {
+    id: 20,
+    category: 'recycle',
+    title: '장바구니 대장',
+    guide: '마트에 갈 때 장바구니 직접 들기',
+    color: '#ECFDF5',
+    iconColor: '#10B981',
+    points: 20,
   },
 ];

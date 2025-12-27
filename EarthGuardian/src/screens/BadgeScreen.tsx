@@ -13,7 +13,7 @@ export const BadgeScreen: React.FC<BadgeScreenProps> = ({ badges, points }) => {
     <View style={styles.container}>
       <Text style={styles.title}>보물함</Text>
       <View style={styles.grid}>
-        {badges.map((badge) => (
+        {badges.map(badge => (
           <BadgeItem
             key={badge.id}
             badge={badge}
