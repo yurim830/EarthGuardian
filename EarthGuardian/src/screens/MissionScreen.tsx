@@ -16,6 +16,7 @@ import {
 } from 'lucide-react-native';
 import { Mission, MissionStats } from '../types';
 import { MissionCard } from '../components/MissionCard';
+import { FONTS } from '../constants/fonts';
 
 interface MissionScreenProps {
   missions: Mission[];
@@ -193,8 +194,9 @@ const styles = StyleSheet.create({
     padding: 24,
   },
   title: {
-    fontSize: 30,
+    fontSize: 28,
     fontWeight: '900',
+    fontFamily: FONTS.juache,
     color: '#1E293B',
     marginBottom: 20,
   },

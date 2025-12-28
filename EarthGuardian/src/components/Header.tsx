@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { Star } from 'lucide-react-native';
+import { FONTS } from '../constants/fonts';
 
 interface HeaderProps {
   points: number;
@@ -34,8 +35,8 @@ const styles = StyleSheet.create({
   },
   appName: {
     fontSize: 22,
-    fontWeight: '900',
     color: '#16A34A',
+    fontFamily: FONTS.juache,
   },
   appSub: {
     fontSize: 10,
@@ -43,6 +44,7 @@ const styles = StyleSheet.create({
     color: '#CBD5E1',
     letterSpacing: 1.5,
     marginTop: 2,
+    fontFamily: FONTS.juache,
   },
   pointIndicator: {
     flexDirection: 'row',

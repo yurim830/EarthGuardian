@@ -9,6 +9,7 @@ import {
 } from 'react-native';
 import { Edit2, X } from 'lucide-react-native';
 import { UserProfile } from '../types';
+import { FONTS } from '../constants/fonts';
 
 interface ProfileScreenProps {
   level: number;
@@ -194,8 +195,9 @@ const styles = StyleSheet.create({
     marginBottom: 24,
   },
   title: {
-    fontSize: 30,
+    fontSize: 28,
     fontWeight: '900',
+    fontFamily: FONTS.juache,
     color: '#1E293B',
   },
   editButton: {

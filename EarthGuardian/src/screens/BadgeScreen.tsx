@@ -2,6 +2,7 @@ import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { Badge } from '../types';
 import { BadgeItem } from '../components/BadgeItem';
+import { FONTS } from '../constants/fonts';
 
 interface BadgeScreenProps {
   badges: Badge[];
@@ -31,8 +32,8 @@ const styles = StyleSheet.create({
     padding: 24,
   },
   title: {
-    fontSize: 30,
-    fontWeight: '900',
+    fontSize: 28,
+    fontFamily: FONTS.juache,
     color: '#1E293B',
     marginBottom: 24,
   },
