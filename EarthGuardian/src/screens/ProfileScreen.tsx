@@ -6,6 +6,10 @@ import {
   TouchableOpacity,
   Modal,
   TextInput,
+  Keyboard,
+  TouchableWithoutFeedback,
+  KeyboardAvoidingView,
+  Platform,
 } from 'react-native';
 import { Edit2, X } from 'lucide-react-native';
 import { UserProfile } from '../types';
@@ -98,86 +102,95 @@ export const ProfileScreen: React.FC<ProfileScreenProps> = ({
         animationType="fade"
         onRequestClose={handleCancel}
       >
-        <View style={styles.modalBackdrop}>
-          <View style={styles.modalContent}>
-            <View style={styles.modalHeader}>
-              <Text style={styles.modalTitle}>프로필 수정</Text>
-              <TouchableOpacity onPress={handleCancel}>
-                <X size={24} color="#64748B" />
-              </TouchableOpacity>
-            </View>
+        <KeyboardAvoidingView
+          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+          style={styles.keyboardAvoidingView}
+        >
+          <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+            <View style={styles.modalBackdrop}>
+              <TouchableWithoutFeedback>
+                <View style={styles.modalContent}>
+                  <View style={styles.modalHeader}>
+                    <Text style={styles.modalTitle}>프로필 수정</Text>
+                    <TouchableOpacity onPress={handleCancel}>
+                      <X size={24} color="#64748B" />
+                    </TouchableOpacity>
+                  </View>
 
-            {/* Name Input */}
-            <View style={styles.inputSection}>
-              <Text style={styles.inputLabel}>이름</Text>
-              <TextInput
-                style={styles.textInput}
-                value={editedName}
-                onChangeText={setEditedName}
-                placeholder="이름을 입력하세요"
-                maxLength={20}
-              />
-            </View>
+                  {/* Name Input */}
+                  <View style={styles.inputSection}>
+                    <Text style={styles.inputLabel}>이름</Text>
+                    <TextInput
+                      style={styles.textInput}
+                      value={editedName}
+                      onChangeText={setEditedName}
+                      placeholder="이름을 입력하세요"
+                      maxLength={20}
+                    />
+                  </View>
 
-            {/* Gender Selection */}
-            <View style={styles.inputSection}>
-              <Text style={styles.inputLabel}>성별</Text>
-              <View style={styles.genderSelection}>
-                <TouchableOpacity
-                  style={[
-                    styles.genderOption,
-                    editedGender === 'boy' && styles.genderOptionActive,
-                  ]}
-                  onPress={() => setEditedGender('boy')}
-                >
-                  <Text style={styles.genderEmoji}>👦</Text>
-                  <Text
-                    style={[
-                      styles.genderLabel,
-                      editedGender === 'boy' && styles.genderLabelActive,
-                    ]}
-                  >
-                    남자
-                  </Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                  style={[
-                    styles.genderOption,
-                    editedGender === 'girl' && styles.genderOptionActive,
-                  ]}
-                  onPress={() => setEditedGender('girl')}
-                >
-                  <Text style={styles.genderEmoji}>👧</Text>
-                  <Text
-                    style={[
-                      styles.genderLabel,
-                      editedGender === 'girl' && styles.genderLabelActive,
-                    ]}
-                  >
-                    여자
-                  </Text>
-                </TouchableOpacity>
-              </View>
-            </View>
+                  {/* Gender Selection */}
+                  <View style={styles.inputSection}>
+                    <Text style={styles.inputLabel}>성별</Text>
+                    <View style={styles.genderSelection}>
+                      <TouchableOpacity
+                        style={[
+                          styles.genderOption,
+                          editedGender === 'boy' && styles.genderOptionActive,
+                        ]}
+                        onPress={() => setEditedGender('boy')}
+                      >
+                        <Text style={styles.genderEmoji}>👦</Text>
+                        <Text
+                          style={[
+                            styles.genderLabel,
+                            editedGender === 'boy' && styles.genderLabelActive,
+                          ]}
+                        >
+                          남자
+                        </Text>
+                      </TouchableOpacity>
+                      <TouchableOpacity
+                        style={[
+                          styles.genderOption,
+                          editedGender === 'girl' && styles.genderOptionActive,
+                        ]}
+                        onPress={() => setEditedGender('girl')}
+                      >
+                        <Text style={styles.genderEmoji}>👧</Text>
+                        <Text
+                          style={[
+                            styles.genderLabel,
+                            editedGender === 'girl' && styles.genderLabelActive,
+                          ]}
+                        >
+                          여자
+                        </Text>
+                      </TouchableOpacity>
+                    </View>
+                  </View>
 
-            {/* Action Buttons */}
-            <View style={styles.modalActions}>
-              <TouchableOpacity
-                style={styles.cancelButton}
-                onPress={handleCancel}
-              >
-                <Text style={styles.cancelButtonText}>취소</Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={styles.saveButton}
-                onPress={handleSave}
-                disabled={!editedName.trim()}
-              >
-                <Text style={styles.saveButtonText}>저장</Text>
-              </TouchableOpacity>
+                  {/* Action Buttons */}
+                  <View style={styles.modalActions}>
+                    <TouchableOpacity
+                      style={styles.cancelButton}
+                      onPress={handleCancel}
+                    >
+                      <Text style={styles.cancelButtonText}>취소</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                      style={styles.saveButton}
+                      onPress={handleSave}
+                      disabled={!editedName.trim()}
+                    >
+                      <Text style={styles.saveButtonText}>저장</Text>
+                    </TouchableOpacity>
+                  </View>
+                </View>
+              </TouchableWithoutFeedback>
             </View>
-          </View>
-        </View>
+          </TouchableWithoutFeedback>
+        </KeyboardAvoidingView>
       </Modal>
     </View>
   );
@@ -274,6 +287,9 @@ const styles = StyleSheet.create({
   },
 
   // Modal Styles
+  keyboardAvoidingView: {
+    flex: 1,
+  },
   modalBackdrop: {
     flex: 1,
     backgroundColor: 'rgba(0,0,0,0.5)',
